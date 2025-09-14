@@ -1,0 +1,525 @@
+{% extends "drive/base.html" %}
+{% load static %}
+
+{% block title %}Payment/driverp{% endblock %}
+
+{% block content %}
+<style>
+.payment-container {
+  display: flex;
+  justify-content: space-between;
+  padding: 30px;
+  gap: 20px;
+}
+
+.payment-method, .payment-summary {
+  border: 2px solid #104c5c;
+  border-radius: 20px;
+  padding: 30px 40px;
+  width: 58%;
+  box-sizing: border-box;
+}
+
+ .payment-summary {
+  border: 2px solid #104c5c;
+  border-radius: 20px;
+  padding: 30px 40px;
+  width: 35%;
+  box-sizing: border-box;
+  margin-top: 50px;;
+}
+
+
+.payment-method h2 {
+  text-align: center;
+  margin-bottom: 40px;
+  font-size: 30px;
+  color: #104c5c;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+}
+
+.payment-option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 25px 0;
+  font-size: 25px;
+  color: #103b4c;
+  line-height: 1.8;
+  cursor: pointer;
+
+}
+
+.payment-option:first-child {
+  margin-top: 0;
+}
+
+.payment-option:last-child {
+  margin-bottom: 0;
+}
+
+.payment-label {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.payment-option img {
+  width: 74px;
+  height: auto;
+}
+
+.radio-circle {
+  width: 42px;
+  height: 42px;
+  border: 2px solid #104c5c;
+  border-radius: 50%;
+  display: inline-block;
+  position: relative;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.radio-circle.checked::after {
+  content: '';
+  width: 19px;
+  height: 19px;
+  background-color: #104c5c;
+  border-radius: 50%;
+  position: absolute;
+  top: 7px;
+  left: 7px;
+}
+
+.payment-summary p,
+{
+  font-size: 18px;
+  color: #103b4c;
+  margin: 15px 0;
+  font-weight: 500;
+  display: flex;
+}
+
+.payment-summary p:nth-child(1),
+.payment-summary p:nth-child(2),
+.payment-summary p:nth-child(3) {
+  letter-spacing: 0.2px;
+}
+
+.payment-summary h3 {
+  font-weight: 700;
+  margin-top: 25px;
+}
+
+.confirm-btn {
+  display: block;
+  width: 70%;
+  background-color: #104c5c;
+  color: white;
+  border: none;
+  border-radius: 15px;
+  padding: 15px 0;
+  font-size: 18px;
+  font-weight: 700;
+  margin-top: 35px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.confirm-btn:hover {
+  background-color: #0d3a4a;
+}
+
+/* Popup styles */
+#confirmation-popup {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border: 3px solid #104c5c;
+  border-radius: 20px;
+  background: white;
+  padding: 40px 30px;
+  text-align: center;
+  z-index: 9999;
+  width: 550px;
+  font-family: Arial, sans-serif;
+}
+
+.popup-image {
+  width: 300px;
+  height: 300px;
+  margin-bottom: 10px;
+}
+
+#confirmation-popup h2 {
+  color: #104c5c;
+  margin-bottom: 25px;
+  font-weight: 700;
+  font-size: 27px;
+}
+
+#confirmation-popup p {
+  font-size: 25px;
+  font-weight: 600;
+  color: #104c5c;
+  margin-bottom: 25px;
+}
+
+#confirmation-popup button {
+  padding: 12px 28px;
+  border: none;
+  background-color: #104c5c;
+  color: white;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 600;
+}
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  margin: 10px 0;
+  font-weight: 500;
+  color: #103b4c;
+  font-size: 18px;
+}
+
+.summary-row span:first-child {
+font-size: 20px;
+line-height: 1.8;
+color:#104c5c;
+}
+
+.payment-summary h3.summary-row {
+  font-weight: 700;
+  margin-top: 29px;
+}
+/* Mobile (up to 480px) */
+@media (max-width: 480px) {
+  .payment-container {
+    flex-direction: column;
+    padding: 20px 15px;
+    gap: 20px;
+  }
+
+  .payment-method, .payment-summary {
+    width: 100%;
+    padding: 20px;
+  }
+
+  .payment-method h2 {
+    font-size: 22px;
+  }
+
+  .payment-option {
+    font-size: 18px;
+  }
+
+  .payment-option img {
+    width: 50px;
+  }
+
+  .radio-circle {
+    width: 30px;
+    height: 30px;
+  }
+
+  .radio-circle.checked::after {
+    width: 13px;
+    height: 13px;
+    top: 6px;
+    left: 6px;
+  }
+
+  .summary-row {
+    font-size: 16px;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .summary-row span:first-child {
+    font-size: 18px;
+  }
+
+  .confirm-btn {
+    width: 100%;
+    font-size: 16px;
+    padding: 12px 0;
+  }
+
+  #confirmation-popup {
+    width: 90%;
+    padding: 25px 20px;
+  }
+
+  .popup-image {
+    width: 220px;
+    height: 220px;
+  }
+
+  #confirmation-popup h2 {
+    font-size: 22px;
+  }
+
+  #confirmation-popup p {
+    font-size: 18px;
+  }
+}
+
+/* Tablet (481px to 768px) */
+@media (min-width: 481px) and (max-width: 768px) {
+  .payment-container {
+    flex-direction: column;
+    padding: 25px 20px;
+    gap: 25px;
+  }
+
+  .payment-method, .payment-summary {
+    width: 100%;
+    padding: 25px 30px;
+  }
+
+  .payment-method h2 {
+    font-size: 26px;
+  }
+
+  .payment-option {
+    font-size: 20px;
+  }
+
+  .payment-option img {
+    width: 60px;
+  }
+
+  .radio-circle {
+    width: 36px;
+    height: 36px;
+  }
+
+  .radio-circle.checked::after {
+    width: 15px;
+    height: 15px;
+    top: 6px;
+    left: 6px;
+  }
+
+  .summary-row {
+    font-size: 17px;
+  }
+
+  .summary-row span:first-child {
+    font-size: 19px;
+  }
+
+  .confirm-btn {
+    width: 80%;
+    font-size: 17px;
+  }
+
+  #confirmation-popup {
+    width: 75%;
+    padding: 30px 25px;
+  }
+
+  .popup-image {
+    width: 260px;
+    height: 260px;
+  }
+
+  #confirmation-popup h2 {
+    font-size: 24px;
+  }
+
+  #confirmation-popup p {
+    font-size: 20px;
+  }
+}
+
+/* Laptop (769px to 1024px) */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .payment-container {
+    flex-direction: row;
+    gap: 25px;
+    padding: 30px;
+  }
+
+  .payment-method {
+    width: 60%;
+    padding: 30px;
+  }
+
+  .payment-summary {
+    width: 38%;
+    padding: 30px;
+    margin-top: 40px;
+  }
+
+  .payment-method h2 {
+    font-size: 28px;
+  }
+
+  .payment-option {
+    font-size: 22px;
+  }
+
+  .payment-option img {
+    width: 65px;
+  }
+
+  .radio-circle {
+    width: 38px;
+    height: 38px;
+  }
+
+  .radio-circle.checked::after {
+    width: 17px;
+    height: 17px;
+    top: 7px;
+    left: 7px;
+  }
+
+  .summary-row {
+    font-size: 18px;
+  }
+
+  .summary-row span:first-child {
+    font-size: 20px;
+  }
+
+  .confirm-btn {
+    width: 70%;
+    font-size: 18px;
+  }
+
+  #confirmation-popup {
+    width: 500px;
+    padding: 35px 30px;
+  }
+
+  .popup-image {
+    width: 280px;
+    height: 280px;
+  }
+
+  #confirmation-popup h2 {
+    font-size: 26px;
+  }
+
+  #confirmation-popup p {
+    font-size: 22px;
+  }
+}
+
+
+</style>
+
+<div class="payment-container">
+  <!-- Left: Payment Methods -->
+  <div class="payment-method">
+    <h2>Select Payment Method</h2>
+
+    <div class="payment-option">
+      <span>Credit Card/ Debit Card</span>
+      <span class="radio-circle"></span>
+    </div>
+    <div class="payment-option">
+      <span>NetBanking</span>
+      <span class="radio-circle"></span>
+    </div>
+    <div class="payment-option">
+      <span class="payment-label"><img src="{% static 'drive/images/Gpay.png' %}" alt="GPay"> GPay</span>
+      <span class="radio-circle"></span>
+    </div>
+    <div class="payment-option">
+      <span class="payment-label"><img src="{% static 'drive/images/paytm.png' %}" alt="Paytm"> Paytm</span>
+      <span class="radio-circle checked"></span>
+    </div>
+    <div class="payment-option">
+      <span class="payment-label"><img src="{% static 'drive/images/phonepe.png' %}" alt="PhonePe"> Phonepay</span>
+      <span class="radio-circle"></span>
+    </div>
+    <div class="payment-option">
+      <span class="payment-label"><img src="{% static 'drive/images/pay.png' %}" alt="AmazonPay"> Amazonpay</span>
+      <span class="radio-circle"></span>
+    </div>
+  </div>
+
+  <!-- Right: Payment Summary -->
+<div class="payment-summary">
+  <div class="summary-row">
+    <span>SubTotal</span>
+    <span>Rs.{{ subtotal }}0</span>
+  </div>
+  <div class="summary-row">
+    <span>GST Tax</span>
+    <span>Rs.{{ gst }}.00</span>
+  </div>
+  <div class="summary-row">
+    <span>Test Drive</span>
+    <span>Rs.{{ test_drive_fee }}.00</span>
+  </div>
+  <br>
+  <h3 class="summary-row">
+    <span>Grand Total</span>
+    <span>Rs.{{ total }}.00</span>
+  </h3>
+<br><br><br><br><br><br><br><br>
+  <button class="confirm-btn">Confirm Payment</button>
+</div>
+
+</div>
+
+<!-- Confirmation Popup -->
+<div id="confirmation-popup">
+<img src="{% static 'drive/images/bike-biker.gif' %}" alt="Bike Penguin" class="popup-image">
+  <h2>Booking Confirmed</h2>
+  <p>The bike is yours. Enjoy your journey!</p>
+  <button onclick="closePopup()">Close</button>
+</div>
+
+
+<script>
+  const paymentOptions = document.querySelectorAll('.payment-option .radio-circle');
+  const confirmBtn = document.querySelector('.confirm-btn');
+  const popup = document.getElementById('confirmation-popup');
+
+  let selectedIndex = -1;
+
+  // Initialize selectedIndex based on "checked" class
+  paymentOptions.forEach((circle, idx) => {
+    if (circle.classList.contains('checked')) {
+      selectedIndex = idx;
+    }
+  });
+
+  // Handle payment option click
+  paymentOptions.forEach((circle, idx) => {
+    circle.parentElement.addEventListener('click', () => {
+      // Remove checked from all
+      paymentOptions.forEach(c => c.classList.remove('checked'));
+      // Add checked to clicked
+      circle.classList.add('checked');
+      selectedIndex = idx;
+    });
+  });
+
+  // Confirm payment button click
+  confirmBtn.addEventListener('click', (event) => {
+    event.preventDefault();
+    if (selectedIndex === -1) {
+      alert('Please select a payment method!');
+      return;
+    }
+    popup.style.display = 'block';
+  });
+
+  // Close popup
+  function closePopup() {
+    popup.style.display = 'none';
+       window.location.href = '/';  // Redirect to home page on closing popup
+  }
+</script>
+{% endblock %}

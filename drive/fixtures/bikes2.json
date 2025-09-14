@@ -1,0 +1,120 @@
+[
+  {
+    "model": "drive.bikes",
+    "pk": 1,
+    "fields": {
+      "year": 2023,
+      "brand": "Yamaha",
+      "model": "MT 15",
+      "category": "Sports",
+      "engine_cc": 150,
+      "fuel_type": "Petrol",
+      "color": "Blue",
+      "kilometers": 8700,
+      "price": 115000,
+      "location": "Thirunelvelli",
+      "owner_info": "1st Owner",
+     "image": "media/bike1_images/yamaha2.png", 
+
+
+
+      "is_booked": false
+    }
+  },
+  {
+    "model": "drive.bikes",
+    "pk": 2,
+    "fields": {
+      "year": 2013,
+      "brand": "Suzuki",
+      "model": "Access",
+      "category": "Scooter",
+      "engine_cc": 125,
+      "fuel_type": "Petrol",
+      "color": "Black",
+      "kilometers": 2600,
+      "price": 30000,
+      "location": "Kanchipuram",
+      "owner_info": "2st Owner",
+        "image": "media/bike1_images/scooter.png",
+      "is_booked": false
+    }
+  },
+  {
+    "model": "drive.bikes",
+    "pk": 3,
+    "fields": {
+      "year": 2020,
+      "brand": "Royal Enfield",
+      "model": "Himalayan",
+      "category": "Adventure",
+      "engine_cc": 410,
+      "fuel_type": "Petrol",
+      "color": "Black",
+      "kilometers": 23700,
+      "price": 250000,
+      "location": "Karur",
+      "owner_info": "1st Owner",
+     "image": "media/bike1_images/image88.png", 
+      "is_booked": false
+    }
+  },
+  {
+    "model": "drive.bikes",
+    "pk": 4,
+    "fields": {
+      "year": 2022,
+      "brand": "OLA",
+      "model": "s1 Pro",
+      "category": "Scooter",
+      "engine_cc": 0,
+      "fuel_type": "Electric",
+      "color": "Blue",
+      "kilometers": 2100,
+      "price": 90000,
+      "location": "Chengai",
+      "owner_info": "1st Owner",
+     "image": "media/bike1_images/ola.png", 
+      "is_booked": true
+    }
+  },
+  {
+    "model": "drive.bikes",
+    "pk": 5,
+    "fields": {
+      "year": 2010,
+      "brand": "Bajaj",
+      "model": "Pulsar LS",
+      "category": "Sports",
+      "engine_cc": 135,
+      "fuel_type": "Petrol",
+      "color": "Red",
+      "kilometers": 9000,
+      "price": 25000,
+      "location": "Dindugal",
+      "owner_info": "3st Owner",
+      "image": "media/bike1_images/bajaj1.png", 
+    
+      "is_booked": false
+    }
+  },
+  {
+    "model": "drive.bikes",
+    "pk": 6,
+    "fields": {
+      "year": 2020,
+      "brand": "Aprilia",
+      "model": "SXR",
+      "category": "Scooter",
+      "engine_cc": 125,
+      "fuel_type": "Petrol",
+      "color": "Red",
+      "kilometers": 8700,
+      "price": 105000,
+      "location": "Madurai",
+      "owner_info": "1st Owner",
+      "image": "media/bike1_images/aprilia2.png", 
+      "is_booked": false
+    }
+  }
+]

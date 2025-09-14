@@ -1,0 +1,350 @@
+{% extends "drive/base.html" %}
+{% load static %}
+
+{% block title %}Home/DriveRP{% endblock %}
+
+{% block content %}
+
+
+<style>
+body{
+      font-family: 'Roboto', sans-serif;
+}
+.bike-container {
+  display: flex;
+  gap: 70px;
+  padding: 40px;
+  justify-content: center;
+
+  position: relative;
+}
+
+/* Each individual bike card */
+.bike-card {
+  background: #d9fcff;
+  border-radius: 20px;
+  width: 400px;
+  text-align: center;
+  position: relative;
+  z-index: 2;
+  transition: transform 0.3s ease;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Image wrapper for consistent height */
+.image-wrapper {
+  height: 300px; /* Same height as info section */
+  width: 100%;
+  overflow: hidden;
+  border-radius: 20px 20px 0 0;
+}
+
+/* Background behind image */
+.image-bg {
+  background-image: url("{% static 'drive/images/image.png' %}");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 20px 20px 0 0;
+}
+
+/* Actual bike image (optional override if needed) */
+.image-bg img {
+  max-height: 100%;
+    max-width: 900px;
+  border-radius: 15px;
+}
+
+/* Bike info section with equal height */
+.bike-info {
+  background-color: #d9fcff;
+  height: 280px; /* Match image-wrapper */
+  line-height: 1.7;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.drive-rp-logo {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width:150px; /* Adjust width as needed */
+  z-index: 10;
+}
+
+.drive-rp-logo img {
+  width: 100%;
+  height: auto;
+}
+
+/* Bike info text styles */
+.bike-info h3 {
+  font-size: 29px;
+  font-weight: 600;
+  color: #02497a;
+ 
+line-height: 1.7;
+  text-align: center;
+}
+
+.bike-info p {
+  font-size: 25px;
+  color:black;
+  font-weight: bold;
+ 
+}
+
+.bike-info h2 {
+  font-size: 25px;
+  font-weight: bold;
+  color: black;
+
+}
+
+.location p{
+  font-weight: 600;
+  color:black;
+  display: flex;
+  align-items: center;
+  font-size:25px;
+  gap: 5px;
+}
+
+</style>
+
+<!-- Vision Section -->
+
+<section class="vision-section" style="display: flex; gap: 40px; padding: 40px 20px; justify-content: center;">
+  <div class="vision-text-box">
+    <h2>{{ vision.title }}</h2>
+    <p>{{ vision.description }}</p>
+     <div class="button-container">
+  <a href="{% url 'buybikes' %}"class="url">Buy Now</a>
+</div>
+  </div>
+
+  <div class="vision-image-box" style="position: relative; width: 500px; height: 350px;">
+
+    <!-- Vision Image -->
+    {% if vision.image1 or vision.image2 or vision.image3 or vision.image4 %}
+  <img id="vision-rotating-image" src="{% if vision.image1 %}{{ vision.image1.url }}{% endif %}" alt="{{ vision.title }}"
+     style="max-width: 100%; width:900px; height: auto; border-radius: 20px; z-index: 2; display: block; margin: 0 auto;top:-80px;">
+
+    {% else %}
+      <p>No vision images available.</p>
+    {% endif %}
+  </div>
+</section>
+
+<section class="mission-section">
+  <div class="mission-image-box">
+    {% if mission and mission.image %}
+      <img src="{{ mission.image.url }}" alt="{{ mission.title }}">
+    {% else %}
+      <p>No image available</p>
+    {% endif %}
+  </div>
+  <div class="mission-text-box">
+    <p>{{ mission.description|default:"No description available" }}</p>
+<div class="button-container">
+  <a href="{% url 'about' %}"class="url">Read Now</a>
+</div>
+
+  </div>
+</section>
+
+<script>
+  // JavaScript for rotating vision images
+  const images = [
+    "{% if vision.image1 %}{{ vision.image1.url }}{% endif %}",
+    "{% if vision.image2 %}{{ vision.image2.url }}{% endif %}",
+    "{% if vision.image3 %}{{ vision.image3.url }}{% endif %}",
+    "{% if vision.image4 %}{{ vision.image4.url }}{% endif %}",
+  ].filter(Boolean); // Remove empty strings if image not set
+
+  let currentIndex = 0;
+
+  function rotateVisionImage() {
+    if (images.length <= 1) return; // no rotation if less than 2 images
+    const imgElement = document.getElementById('vision-rotating-image');
+    currentIndex = (currentIndex + 1) % images.length;
+    imgElement.src = images[currentIndex];
+  }
+
+  setInterval(rotateVisionImage, 3000);  // change every 3 seconds
+</script>
+
+<div class="heading-arrow">
+    <h2>Get the Support You Needs</h2>
+</div>
+<br><br>
+<div class="arrow-container">
+  {% for arrow in arrows %}
+    <div class="arrow-box 
+                {% if forloop.counter == 1 or forloop.counter == 3 %}
+                    image-top
+                {% else %}
+                    image-bottom
+                {% endif %}"
+         style="background-image: url('{{ arrow.background_image.url }}');">
+
+      {% if forloop.counter == 1 or forloop.counter == 3 %}
+        <div class="arrow-img">
+          <img src="{{ arrow.image.url }}" alt="{{ arrow.title }}" />
+        </div>
+      {% endif %}
+
+      <h3>{{ arrow.title }}</h3>
+      <p>{{ arrow.description }}</p>
+
+      {% if forloop.counter == 2 or forloop.counter == 4 %}
+        <div class="arrow-img">
+          <img src="{{ arrow.image.url }}" alt="{{ arrow.title }}" />
+        </div>
+      {% endif %}
+
+    </div>
+  {% endfor %}
+</div>
+<br>
+<div class="heading-arrow">
+    <h2>Our Few Bikes</h2>
+</div>
+<div class="bike-container">
+  {% for bike in bikes %}
+    <div class="bike-card">
+   <div class="drive-rp-logo">
+        <img src="{% static 'drive/images/logo1.png' %}" alt="DriveRP Logo">
+      </div>
+      <div class="image-wrapper">
+        <div class="image-bg">
+          {% if bike.image %}
+            <img src="{{ bike.image.url }}" alt="{{ bike.name }}">
+          {% elif bike.image_url %}
+            <img src="{{ bike.image_url }}" alt="{{ bike.name }}">
+          {% else %}
+            <p>No image available</p>
+          {% endif %}
+        </div>
+      </div>
+
+ <div class="bike-info">
+  <h3>{{ bike.year }} {{ bike.name }} | {{ bike.formatted_engine_info }}</h3>
+  <p><i class="fas fa-tachometer-alt"></i>{{ bike.kilometers }} Km· {{ bike.fuel_type }}· {{ bike.ownership }}{% if bike.ownership == 1 %}st{% elif bike.ownership == 2 %}nd{% elif bike.ownership == 3 %}rd{% else %}th{% endif %} Owner</p>
+  <h2>₹ {{ bike.formatted_price }}</h2>
+  <p class="location"><i class="fas fa-map-marker-alt"></i>  {{ bike.location }}</p>
+</div>
+
+
+    </div>
+  {% endfor %}
+</div>
+
+<br>
+<div class="stats-section">
+<div class="stats-header">
+  <h2>Over 15000+ Satisfied Customers</h2>
+  <span class="drive-rp-logo-text">Drive<span class="rp-highlight">RP</span></span>
+</div>
+
+
+<div class="stats-items">
+  <div class="stat-box">
+    <div class="stat-header">
+      <i class="fas fa-motorcycle" aria-hidden="true"></i>
+      </div>
+       <div class="stat-header1">
+      <h3>5000+</h3>
+    
+    <p>Bikes Purchased</p>
+  </div>
+  </div>
+
+  <div class="stat-box">
+    <div class="stat-header">
+      <i class="fas fa-star" aria-hidden="true"></i>
+      </div>
+      <div class="stat-header1">
+      <h3>4.5</h3>
+    
+    <p>Average Rating</p>
+  </div>
+  </div>
+
+  <div class="stat-box">
+    <div class="stat-header">
+      <i class="fas fa-award" aria-hidden="true"></i>
+      </div>
+          <div class="stat-header1">
+      <h3>25+</h3>
+   
+    <p>Years Experience</p>
+  </div>
+</div>
+
+</div>
+</div>
+<br>
+<div class="heading-arrow">
+    <h2>Real Stories From our Happy Customers</h2>
+    <p>Their word drive us forward and inspires others to join the movement</p>
+</div>
+   <div class="testimonial-container">
+        {% for testimonial in testimonials %}
+            <div class="testimonial-card">
+                <img src="{{ testimonial.image.url }}" alt="{{ testimonial.name }}">
+                <h3>{{ testimonial.name }} – {{ testimonial.role }}</h3>
+                <p>{{ testimonial.quote }}</p>
+            </div>
+        {% endfor %}
+    </div>
+<br>
+<br>
+
+ <div class="hero-wrapper">
+        <div class="hero-text">
+            <h2>{{ hero.heading }}</h2>
+            <p>{{ hero.subtext }}</p>
+        </div>
+        <div class="hero-image">
+            <img src="{{ hero.image.url }}" alt="Motorcyclist">
+        </div>
+    </div>
+    <br><br>
+
+
+<div class="faq-container">
+  {% for faq in faqs %}
+    <div class="faq-item">
+      <button class="faq-question">
+        {{ forloop.counter }}. {{ faq.question }}
+      </button>
+      <div class="faq-answer">
+        <p>{{ faq.answer }}</p>
+      </div>
+    </div>
+  {% endfor %}
+</div>
+</div>
+<script>
+  // Toggle open/close
+  document.addEventListener("DOMContentLoaded", function () {
+    const questions = document.querySelectorAll(".faq-question");
+    questions.forEach((q) => {
+      q.addEventListener("click", function () {
+        const parent = q.parentElement;
+        parent.classList.toggle("active");
+      });
+    });
+  });
+</script>
+
+{% endblock %}

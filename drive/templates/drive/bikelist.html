@@ -1,0 +1,744 @@
+{% extends "drive/base.html" %}
+{% load static %}
+{% load humanize %}
+
+{% block title %}Buy Bike/DriveRP{% endblock %}
+
+{% block content %}
+<style>
+body { font-family: 'Roboto', sans-serif; margin: 0; padding: 0; }
+.container {  margin: auto; padding: 20px; display: flex; gap:50px;justify-content: center;}
+
+/* Sidebar filter */
+.filters {
+  width: 450px;
+  background: #e7f0fa;
+  padding: 15px;
+ 
+  font-weight: 900;
+  color: #070357;
+  height: fit-content;
+  margin-left:-80px;
+
+
+  
+}
+
+.filters h3 {
+  margin-top: 0;
+  font-weight: 700;
+  font-size: 18px;
+  margin-bottom: 15px;
+
+}
+.filters hr {
+  border:1px solid black;
+}
+
+.filter-group {
+  margin-bottom: 25px;
+}
+
+.filter-header {
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  font-weight: 700;
+  padding-bottom: 6px;
+  border-bottom: 1px solid #070357;
+  user-select: none;
+  color: black;
+  font-size: 19px;
+}
+
+.filter-header.active .arrow {
+  transform: rotate(180deg);
+  transition: transform 0.3s ease;
+}
+
+.filter-content {
+  padding: 10px 0 10px 10px;
+  display: none;
+  font-weight: 600;
+  color: #212121;
+}
+
+.filter-content label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 14px;
+}
+
+.filter-content input[type="checkbox"] {
+  margin-right: 8px;
+  vertical-align: middle;
+  transform: scale(1.1);
+}
+
+.filter-content input[type="number"],
+.filter-content select {
+  width: 100%;
+  padding: 6px;
+  margin-bottom: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  font-size: 14px;
+}
+
+.filter-content input[type="range"] {
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+/* Button styling */
+button[type="submit"] {
+  width: 100%;
+  background-color: #4682b4;
+  border: none;
+  color: white;
+  font-weight: 700;
+  padding: 10px 0;
+  font-size: 16px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button[type="submit"]:hover {
+  background-color: #356699;
+}
+
+/* Main bikes section */
+.bikes {
+  flex-grow: 1;
+  margin-left: 20px;
+}
+/* Bike info section with equal height */
+.bike-info {
+  background-color: #d9fcff;
+  height: 250px; /* Match image-wrapper */
+  line-height: 1.6;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.drive-rp-logo {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width:120px; /* Adjust width as needed */
+  z-index: 10;
+}
+
+.drive-rp-logo img {
+  width: 100%;
+  height: auto;
+}
+
+/* Bike info text styles */
+.bike-info h3 {
+  font-size: 23px;
+  font-weight: 600;
+  color: #02497a;
+ 
+line-height: 1.5;
+  text-align: center;
+}
+.bike-info h4 {
+  font-size: 25px;
+  font-weight: 600;
+  color:black;
+ 
+line-height: 1.5;
+  text-align: center;
+}
+
+
+.bike-info p {
+  font-size: 20px;
+  color:black;
+  font-weight: bold;
+  text-align: center;
+ 
+}
+
+.bike-info h2 {
+  font-size: 25px;
+  font-weight: bold;
+  color: black;
+
+}
+
+.location p{
+  font-weight: 600;
+  color:black;
+  display: flex;
+  align-items: center;
+  font-size:25px;
+  gap: 5px;
+}
+
+
+.top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+  font-weight: 700;
+  font-size: 18px;
+  color: #222222;
+}
+.top-bar h2{
+    font-size: 22px;
+    color:black;
+    font-weight: 600;
+
+}
+.top-bar label {
+  margin-right: 10px;
+  font-weight: 600;
+  font-size: 20px;
+  color:black;
+    background-color: white;
+}
+
+#sortSelect {
+  padding: 6px 8px;
+  font-size: 20px;
+  font-weight: 600;
+  border-radius: 20px;
+border:2px solid #356699;
+  color: black;;
+  cursor: pointer;
+}
+
+/* Bike listing flex container */
+.bike-listing {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 50px ; /* 30px vertical and horizontal gap */
+  justify-content: flex-start;
+ 
+  margin: 0 auto;
+}
+
+.bike-item {
+  background: #d9fcff;
+  border-radius: 20px;
+  width: 300px;
+  height: 480px; /* consistent height */
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+  display: flex;
+  flex-direction: column;
+  font-weight: 600;
+  color: #004080;
+  transition: transform 0.3s ease;
+}
+
+.bike-image-wrapper {
+  height: 400px;
+  width: 100%;
+  overflow: hidden;
+  border-radius: 20px 20px 0 0;
+  background: url("{% static 'drive/images/image.png' %}") center/cover no-repeat;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.bike-image-bg img {
+  max-height: 100%;
+  max-width: 400px;
+  border-radius: 15px;
+}
+
+.bike-details {
+  background-color: #d9fcff;
+  height: 280px; /* matches height difference */
+  line-height: 1.7;
+  display: flex;
+  color:black;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.booked-label {
+  position: absolute;
+  top: 0px;
+  left: 9px;
+  background: red;
+  color: white;
+  padding: 8px 25px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  z-index: 20;
+}
+
+/* Top bar styling */
+.top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+  font-weight: 700;
+  font-size: 18px;
+  color: #222222;
+}
+
+.top-bar h2 {
+  font-size: 22px;
+  color: black;
+  font-weight: 600;
+}
+
+#sortSelect {
+  padding: 6px 12px;
+  font-size: 20px;
+  border-radius: 10px;
+  border: 2px solid black;
+  background-color: #fff;
+  color: black;
+  cursor: pointer;
+  min-width: 180px;
+}
+label[for="sortSelect"] {
+  font-weight: 600;
+  color:black;
+  margin-right: 10px;
+  user-select: none;
+  font-size: 22px;
+}
+
+#sortSelect {
+  padding: 6px 12px;
+  font-size: 20px;
+  border-radius: 10px;
+  border: 2px solid black;
+  background-color: #fff;
+  color:black;
+  cursor: pointer;
+  min-width: 180px;
+}
+.sortSelect option {
+  /* Padding and border-radius usually don't work on options */
+  font-size: 20px;
+  background-color: #d9fcff; /* Might work */
+  color: black;
+  cursor: pointer; /* Usually no effect */
+  /* border and min-width will be ignored */
+}
+
+#sortSelect:hover,
+#sortSelect:focus {
+  border-color: #486a88;
+  box-shadow: 0 0 5px rgba(72, 106, 136, 0.5);
+  outline: none;
+}
+/* 🔹 Mobile devices (up to 480px) */
+@media (max-width: 480px) {
+  .container {
+    flex-direction: column;
+    gap: 20px;
+    padding: 10px;
+  }
+
+  .filters {
+    width: 100%;
+    margin-left: 0;
+    padding: 10px;
+  }
+
+  .bike-item {
+    width: 100%;
+    height: auto;
+  }
+
+  .bike-image-wrapper {
+    height: 250px;
+  }
+
+  .top-bar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  #sortSelect {
+    width: 100%;
+    font-size: 16px;
+  }
+
+  label[for="sortSelect"] {
+    font-size: 18px;
+  }
+
+  .bike-info h3,
+  .bike-info h4,
+  .bike-info p {
+    font-size: 18px;
+  }
+
+  .location p {
+    font-size: 18px;
+  }
+  .arrow{
+    font-size: 20px;
+    margin-top: -10px;
+  }
+}
+
+/* 🔹 Tablet devices (481px to 768px) */
+@media (min-width: 481px) and (max-width: 768px) {
+  .container {
+    flex-direction: column;
+    gap: 30px;
+    padding: 15px;
+  }
+
+  .filters {
+    width: 100%;
+    margin-left: 0;
+    padding: 15px;
+  }
+
+  .bike-item {
+    width: 100%;
+    height: auto;
+  }
+
+  .bike-image-wrapper {
+    height: 300px;
+  }
+
+  .top-bar {
+    flex-direction:row;
+    align-items: flex-start;
+  }
+
+  #sortSelect {
+    width: 100%;
+    font-size: 18px;
+  }
+
+  label[for="sortSelect"] {
+    font-size: 20px;
+  }
+  .arrow{
+    font-size: 20px;;
+    margin-top: -20px;
+  }
+}
+
+/* 🔹 Laptop devices (769px to 1024px) */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .container {
+    flex-direction: row;
+    gap: 30px;
+    padding: 20px;
+  }
+
+  .filters {
+    width: 390px;
+    margin-left: 0;
+  }
+
+  .bike-item {
+    width: 46%;
+    
+  }
+  .bike-list{
+    display: flex;
+  }
+
+  .bike-image-wrapper {
+    height: 350px;
+  }
+
+  #sortSelect {
+    width: auto;
+  }
+}
+
+
+
+</style>
+
+<div class="container">
+  <div class="filters">
+    <h3>Filter</h3><hr>
+
+    <form method="get" id="filterForm">
+
+      <!-- Budget -->
+      <div class="filter-group">
+        <div class="filter-header" onclick="toggleAccordion(this)">
+          <label>Budget (₹)</label>
+          <span class="arrow">&#x25BC;</span>
+        </div>
+        <div class="filter-content">
+          <input type="number" id="budgetMinInput" name="budget_min" 
+                 value="{{ filters.budget_min|default:0 }}" min="0" max="1000000" placeholder="Min">
+          <input type="range" id="budgetMinRange" min="0" max="1000000" step="1000" 
+                 value="{{ filters.budget_min|default:0 }}">
+          <br>
+          <input type="number" id="budgetMaxInput" name="budget_max" 
+                 value="{{ filters.budget_max|default:1000000 }}" min="0" max="1000000" placeholder="Max">
+          <input type="range" id="budgetMaxRange" min="0" max="1000000" step="1000" 
+                 value="{{ filters.budget_max|default:1000000 }}">
+        </div>
+      </div>
+
+      <!-- Categories -->
+      <div class="filter-group">
+        <div class="filter-header" onclick="toggleAccordion(this)">
+          <label>Categories</label>
+          <span class="arrow">&#x25BC;</span>
+        </div>
+        <div class="filter-content">
+          {% for cat in all_categories %}
+            <label>
+              <input type="checkbox" name="category" value="{{ cat }}" {% if cat in selected_categories %}checked{% endif %}>
+              {{ cat }}
+            </label>
+          {% endfor %}
+        </div>
+      </div>
+
+      <!-- Brand -->
+      <div class="filter-group">
+        <div class="filter-header" onclick="toggleAccordion(this)">
+          <label>Brand</label>
+          <span class="arrow">&#x25BC;</span>
+        </div>
+        <div class="filter-content">
+          {% for b in all_brands %}
+            <label>
+              <input type="checkbox" name="brand" value="{{ b }}" {% if b in selected_brands %}checked{% endif %}>
+              {{ b }}
+            </label>
+          {% endfor %}
+        </div>
+      </div>
+
+      <!-- Year -->
+      <div class="filter-group">
+        <div class="filter-header" onclick="toggleAccordion(this)">
+          <label>Year</label>
+          <span class="arrow">&#x25BC;</span>
+        </div>
+        <div class="filter-content">
+          <input type="number" id="yearMinInput" name="year_min" 
+                 value="{{ filters.year_min|default:2000 }}" min="1900" max="2025" placeholder="From">
+          <input type="range" id="yearMinRange" min="1900" max="2025" step="1" 
+                 value="{{ filters.year_min|default:2000 }}">
+          <br>
+          <input type="number" id="yearMaxInput" name="year_max" 
+                 value="{{ filters.year_max|default:2025 }}" min="1900" max="2025" placeholder="To">
+          <input type="range" id="yearMaxRange" min="1900" max="2025" step="1" 
+                 value="{{ filters.year_max|default:2025 }}">
+        </div>
+      </div>
+
+      <!-- Kilometers -->
+      <div class="filter-group">
+        <div class="filter-header" onclick="toggleAccordion(this)">
+          <label>Kilometers</label>
+          <span class="arrow">&#x25BC;</span>
+        </div>
+        <div class="filter-content">
+          <input type="number" id="kmMinInput" name="km_min" 
+                 value="{{ filters.km_min|default:0 }}" min="0" max="100000" placeholder="Min">
+          <input type="range" id="kmMinRange" min="0" max="100000" step="1000" 
+                 value="{{ filters.km_min|default:0 }}">
+          <br>
+          <input type="number" id="kmMaxInput" name="km_max" 
+                 value="{{ filters.km_max|default:100000 }}" min="0" max="100000" placeholder="Max">
+          <input type="range" id="kmMaxRange" min="0" max="100000" step="1000" 
+                 value="{{ filters.km_max|default:100000 }}">
+        </div>
+      </div>
+
+      <!-- Engine CC -->
+      <div class="filter-group">
+        <div class="filter-header" onclick="toggleAccordion(this)">
+          <label>Engine CC</label>
+          <span class="arrow">&#x25BC;</span>
+        </div>
+        <div class="filter-content">
+          <input type="number" id="engineMinInput" name="engine_min" 
+                 value="{{ filters.engine_min|default:0 }}" min="0" max="2000" placeholder="Min">
+          <input type="range" id="engineMinRange" min="0" max="2000" step="50" 
+                 value="{{ filters.engine_min|default:0 }}">
+          <br>
+          <input type="number" id="engineMaxInput" name="engine_max" 
+                 value="{{ filters.engine_max|default:2000 }}" min="0" max="2000" placeholder="Max">
+          <input type="range" id="engineMaxRange" min="0" max="2000" step="50" 
+                 value="{{ filters.engine_max|default:2000 }}">
+        </div>
+      </div>
+
+      <!-- Fuel Type -->
+      <div class="filter-group">
+        <div class="filter-header" onclick="toggleAccordion(this)">
+          <label>Fuel Type</label>
+          <span class="arrow">&#x25BC;</span>
+        </div>
+        <div class="filter-content">
+          {% for f in all_fuel_types %}
+            <label>
+              <input type="checkbox" name="fuel_type" value="{{ f }}" {% if f in selected_fuels %}checked{% endif %}>
+              {{ f }}
+            </label>
+          {% endfor %}
+        </div>
+      </div>
+
+      <!-- Color -->
+      <div class="filter-group">
+        <div class="filter-header" onclick="toggleAccordion(this)">
+          <label>Color</label>
+          <span class="arrow">&#x25BC;</span>
+        </div>
+        <div class="filter-content">
+          {% for c in all_colors %}
+            <label>
+              <input type="checkbox" name="color" value="{{ c }}" {% if c in selected_colors %}checked{% endif %}>
+              {{ c }}
+            </label>
+          {% endfor %}
+        </div>
+      </div>
+
+      <button type="submit">Apply Filters</button>
+    </form>
+  </div>
+
+  <div class="bikes">
+    <div class="top-bar">
+      <h2>{{ bikes.count }} Bikes in Tamil Nadu</h2>
+      <form method="get" id="sortForm">
+        {% for key, value in filters.items %}
+          {% if key != 'sort' %}
+            <input type="hidden" name="{{ key }}" value="{{ value }}">
+          {% endif %}
+        {% endfor %}
+        <label for="sortSelect">Sort By</label>
+        <select name="sort" id="sortSelect" onchange="this.form.submit()">
+          <option value="newest" {% if selected_sort == 'newest' %}selected{% endif %}>Newest First</option>
+          <option value="price_asc" {% if selected_sort == 'price_asc' %}selected{% endif %}>Price - Low to High</option>
+          <option value="price_desc" {% if selected_sort == 'price_desc' %}selected{% endif %}>Price - High to Low</option>
+          <option value="km_asc" {% if selected_sort == 'km_asc' %}selected{% endif %}>KM Driven - Low to High</option>
+          <option value="km_desc" {% if selected_sort == 'km_desc' %}selected{% endif %}>KM Driven - High to Low</option>
+          <option value="year_asc" {% if selected_sort == 'year_asc' %}selected{% endif %}>Year - Old to New</option>
+          <option value="year_desc" {% if selected_sort == 'year_desc' %}selected{% endif %}>Year - New to Old</option>
+        </select>
+      </form>
+    </div>
+
+    
+   <div class="bike-listing">
+  {% for bike in bikes %}
+    <div class="bike-item" style="position: relative;">
+      {% if bike.is_booked %}
+        <div class="booked-label">Booked</div>
+      {% endif %}
+      <div class="drive-rp-logo">
+        <img src="{% static 'drive/images/logo1.png' %}" alt="DriveRP Logo">
+      </div>
+<div class="bike-image-wrapper">
+  <a href="{% url 'bike_detail' bike.pk %}">
+    {% if bike.image %}
+      <div class="bike-image-bg">
+        <img src="{{ bike.image.url }}" alt="{{ bike.brand }} {{ bike.model }}">
+      </div>
+    {% else %}
+      <div class="bike-image-bg no-image"></div>
+    {% endif %}
+  </a>
+</div>
+
+
+
+      <div class="bike-info">
+        <h3>{{ bike.year }} | {{ bike.brand }} {{ bike.model }} | {{ bike.engine_cc }}CC</h3>
+        <p> <i class="fas fa-tachometer-alt"></i>{{ bike.kilometers }} Km . {{ bike.fuel_type }} . {{ bike.owner_info }}</p>
+        <h4>₹ {{ bike.price|intcomma }}</h4>
+        <p><i class="fas fa-map-marker-alt"></i>  {{ bike.location }}</p>
+      </div>
+    </div>
+  {% empty %}
+    <p>No bikes match your filter criteria.</p>
+  {% endfor %}
+</div>
+</div>
+
+<script>
+  function toggleAccordion(clickedHeader) {
+    const allHeaders = document.querySelectorAll('.filter-header');
+    const allContents = document.querySelectorAll('.filter-content');
+
+    allHeaders.forEach(header => {
+      if (header !== clickedHeader) {
+        header.classList.remove('active');
+      }
+    });
+
+    allContents.forEach(content => {
+      if (content.previousElementSibling !== clickedHeader) {
+        content.style.display = 'none';
+      }
+    });
+
+    // Toggle clicked one
+    const content = clickedHeader.nextElementSibling;
+    if (content.style.display === 'block') {
+      content.style.display = 'none';
+      clickedHeader.classList.remove('active');
+    } else {
+      content.style.display = 'block';
+      clickedHeader.classList.add('active');
+    }
+  }
+
+  // Sync slider and number inputs
+  function syncRangeAndNumber(inputId, rangeId, min, max) {
+    const input = document.getElementById(inputId);
+    const range = document.getElementById(rangeId);
+
+    // Sanitize and sync number input -> range
+    input.addEventListener('input', () => {
+      let val = parseInt(input.value);
+      if (isNaN(val)) val = min;
+      if (val < min) val = min;
+      if (val > max) val = max;
+      input.value = val;
+      range.value = val;
+    });
+
+    // Sync range -> number input
+    range.addEventListener('input', () => {
+      input.value = range.value;
+    });
+  }
+
+  // Initialize syncing for all numeric filter ranges and inputs
+  syncRangeAndNumber('budgetMinInput', 'budgetMinRange', 0, 1000000);
+  syncRangeAndNumber('budgetMaxInput', 'budgetMaxRange', 0, 1000000);
+
+  syncRangeAndNumber('yearMinInput', 'yearMinRange', 1900, 2025);
+  syncRangeAndNumber('yearMaxInput', 'yearMaxRange', 1900, 2025);
+
+  syncRangeAndNumber('kmMinInput', 'kmMinRange', 0, 100000);
+  syncRangeAndNumber('kmMaxInput', 'kmMaxRange', 0, 100000);
+
+  syncRangeAndNumber('engineMinInput', 'engineMinRange', 0, 2000);
+  syncRangeAndNumber('engineMaxInput', 'engineMaxRange', 0, 2000);
+
+</script>
+
+{% endblock %}

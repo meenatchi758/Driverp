@@ -1,0 +1,46 @@
+{% extends "drive/base.html" %}
+{% load static %}
+
+{% block title %}About/DriveRP{% endblock %}
+
+{% block content %}
+  <section class="about-section">
+    {% if about.image %}
+      <img src="{{ about.image.url }}" alt="{{ about.title }}">
+    {% endif %}
+    <div class="about-content">
+      <h2>{{ about.title }}</h2>
+      <p>{{ about.description }}</p>
+    </div>
+  </section>
+
+  <div class="chango-section">
+    {% if chango %}
+        <img src="{{ chango.background_image.url }}" alt="Chango Background">
+        <div class="chango-overlay">
+            <h2>{{ chango.title }}</h2>
+            <p>{{ chango.description }}</p>
+        </div>
+    {% else %}
+        <p>No chango content available.</p>
+    {% endif %}
+</div>
+<br><br>
+
+<div class="approach-section">
+    <div class="approach-content">
+        <h2>{{ approach.title }}</h2>
+        <p>{{ approach.description }}</p>
+    </div>
+<div class="approach-image">
+   {% if approach.image %}
+    <img src="{{ approach.image.url }}" alt="Approach Image">
+{% else %}
+    <p><em>No image available.</em></p>
+{% endif %}
+
+</div>
+
+</div>
+
+  {% endblock %}
